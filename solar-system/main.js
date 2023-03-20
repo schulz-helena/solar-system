@@ -12,21 +12,25 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
-const material = new THREE.MeshStandardMaterial({color: 0xFF6347});
-const torus = new THREE.Mesh(geometry, material);
-scene.add(torus);
+const sunTexture = new THREE.TextureLoader().load('textures/8k_sun.jpg');
+const sun = new THREE.Mesh(
+  new THREE.SphereGeometry(10, 32, 32),
+  new THREE.MeshStandardMaterial({
+    map: sunTexture,
+  })
+);
+scene.add(sun);
 
 const earthTexture = new THREE.TextureLoader().load('textures/8k_earth_daymap.jpg');
-const earthNormalmap = new THREE.TextureLoader().load('textures/8k_earth_normal_map.tif');
+//const earthNormalmap = new THREE.TextureLoader().load('textures/8k_earth_normal_map.tif');
 const earth = new THREE.Mesh(
   new THREE.SphereGeometry(3, 32, 32),
   new THREE.MeshStandardMaterial({
     map: earthTexture,
-    normalMap: earthNormalmap,
   })
 );
-scene.add(earth);
+earth.position.set(20, 0, 0);
+sun.add(earth);
 
 const background = new THREE.TextureLoader().load('textures/8k_stars.jpg');
 scene.background = background;
@@ -50,9 +54,6 @@ Array(200).fill().forEach(createStar);
 
 function animate() {
   requestAnimationFrame(animate);
-  torus.rotation.x += 0.01;
-  torus.rotation.y += 0.01;
-  torus.rotation.z += 0.01;
   controls.update();
   renderer.render(scene, camera);
 }
